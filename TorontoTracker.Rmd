@@ -481,7 +481,7 @@ acqBreakdown$Case_AcquisitionInfo <- ifelse(acqBreakdown$Case_AcquisitionInfo ==
 acqBreakdown$Case_AcquisitionInfo <- ifelse(acqBreakdown$Case_AcquisitionInfo == "Travel", "Travel", acqBreakdown$Case_AcquisitionInfo)
 
 
-acqBreakdown$colors <- c("#E01E5A", "#4285F4", "#767676", "#0F9D58", "#F4B400", "#0F9D58")
+acqBreakdown$colors <- c("#E01E5A", "#4285F4", "#767676", "#0F9D58", "#F4B400")
 ```
 
 
@@ -774,21 +774,25 @@ plot_ly(daily_genders, x = ~Case_Reported_Date, y = ~csum,
 About this Site
 ===================================== 
 
-#### Last Update: `r paste(format(Sys.time(), "%Y-%m-%d"))`  
+#### <b> Last Update: `r paste(format(Sys.time(), "%Y-%m-%d"))`  </b> 
 
 </br>
 
-#### Background 
+#### <b> Background </b> 
 *"Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less" - Marie Curie*  
 
-#### Code
-Codebase and dataset used to generate this web application are available on [Github](https://github.com/Erebus54/OntarioCovid19TrackerDashboard).
+#### <b> Code </b>
+Codebase and dataset used to generate this web application are available on [Github](https://github.com/Erebus54/Toronto-Covid19-Tracker-Dashboard).
 
 
-#### Sources 
+#### <b> Sources </b>
 
 *Status of COVID-19 cases in Ontario* : [Open Data Ontario](https://data.ontario.ca/dataset/status-of-covid-19-cases-in-ontario), updated daily, which presents a breakdown by region, case status, & age groups 
 
-#### Author
+#### <b> Author </b> 
 
 Patrick Schnurbusch
+
+#### <b> Contact </b> 
+
+patrick.schnurbusch@gmail.com
