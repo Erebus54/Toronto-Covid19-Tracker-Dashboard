@@ -22,7 +22,8 @@ casestatus$Test_Reported_Date <- as.Date(casestatus$Test_Reported_Date)
 target <- "Toronto Public Health"
 
 casestatus <- casestatus %>% 
-  dplyr::filter(Reporting_PHU == target)
+  dplyr::filter(Reporting_PHU == target) %>% 
+  dplyr::arrange(desc(Case_Reported_Date))
 
 #create .csv for each date of dataset
 dirPath <- paste(getwd(), "/datasets/", sep = "")
