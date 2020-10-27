@@ -210,33 +210,6 @@ fig
 ```
 
 
-
-
-### <b> Doubling Times (Days) </b>
-```{r}
-
-dailyPHU$dt <- as.integer((difftime(dailyPHU$Case_Reported_Date, min(dailyPHU$Case_Reported_Date), units = "days")*log(2))/(log(dailyPHU$csum/1))) 
-
-plot_ly(dailyPHU, 
-        x = ~Case_Reported_Date, 
-        y = ~dt, 
-        name = "dt",
-        type = 'scatter', 
-        fill ='tozeroy', 
-        mode = 'lines', 
-        fillcolor = "#2858A6", 
-        line = list(width = 0.1)) %>% 
-  
-  layout(title = "",
-         xaxis = list(title = ""), 
-         yaxis = list(title = "Doubling Time"), 
-         hovermode = "x unified") %>% 
-  
-    layout(xaxis = list(rangeselector = list(
-    buttons = buttons_time)))
-```
-
-
 ### <b> Rolling Averages </b>
 
 ```{r}
