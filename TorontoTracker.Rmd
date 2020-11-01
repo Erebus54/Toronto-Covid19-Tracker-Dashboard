@@ -58,7 +58,7 @@ casestatus$Test_Reported_Date <- as.Date(casestatus$Test_Reported_Date, format =
 TargetPHU <- casestatus
 ```
 
-```{r}
+```{r TimeButtons}
 ##adding a range selector variable to supply list of options for our time series graphs into buttons_time
 buttons_time <- list(
   
@@ -103,7 +103,6 @@ Row
 -----------------------------------------------------------------------
 ### Total Cumulative Cases 
 ```{r}
-
 #use this to change icons https://ionicons.com/v2/cheatsheet.html
 cCases <- paste(format(round(as.numeric(nrow(TargetPHU)), 0), nsmall=0, big.mark=",")  # 1,000.6
 )
