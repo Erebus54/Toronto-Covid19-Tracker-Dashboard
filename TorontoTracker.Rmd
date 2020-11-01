@@ -8,6 +8,30 @@ output:
 runtime: shiny
 ---
 
+<style>
+.navbar {
+  background-color:black;
+  border-color:white;
+}
+
+.navbar-brand {color:white!important;}
+
+.navbar-inverse .navbar-nav > li > a:focus {
+    background-color: #04d9ff;
+    color: white;
+}
+.navbar-inverse .navbar-nav > .active > a:focus {
+  color: white;
+  background-color: #04d9ff;
+}
+.navbar-inverse .navbar-toggle:focus {
+  background-color: #04d9ff;
+}
+.navbar-inverse .navbar-form {
+  border-color: #04d9ff;
+}
+</style>
+
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(rsconnect)
