@@ -527,7 +527,7 @@ fig <- fig %>% layout(xaxis = list(showgrid = FALSE, zeroline = FALSE, showtickl
 fig
 ``` 
 
-### <b> Case Acquisitions over time </b> 
+### <b> Acquisition Compositions Over Time </b> 
 
 ```{r}
 acq_daily <- TargetPHU %>% 
@@ -575,7 +575,6 @@ fig <- fig %>% layout(title = "",
 
 fig
 ```
-
 
 ### <b> Cumulative Acquisitions </b> 
 ```{r}
