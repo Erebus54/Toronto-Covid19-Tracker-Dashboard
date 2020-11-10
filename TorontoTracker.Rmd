@@ -245,17 +245,15 @@ rolling.avg <- dailyPHU %>%
   dplyr::select(Case_Reported_Date, Cases) %>% 
   dplyr::mutate(cp.7 = round(zoo::rollmean(Cases, k = 7, fill = NA),0),
                 cp.14 = round(zoo::rollmean(Cases, k = 14, fill = NA),0), 
-                cp.28 = round(zoo::rollmean(Cases, k = 28, fill = NA),0), 
-                cp.56 = round(zoo::rollmean(Cases, k = 56, fill = NA),0)
+                cp.28 = round(zoo::rollmean(Cases, k = 28, fill = NA),0)
 )
 
 plot_ly(rolling.avg, x = ~Case_Reported_Date, y = ~cp.7, name = "7 Day Average",
         type = 'scatter', mode = 'lines', fill = 'tozeroy', line = list(width = 0.1)) %>% 
   
   add_trace(y = ~cp.14, name = "14 Day Average") %>% 
-  add_trace(y = ~cp.28, name = "28 Day Average ") %>% 
-  add_trace(y = ~cp.56, name = "56 Day Average") %>% 
-  
+  add_trace(y = ~cp.28, name = "28 Day Average") %>% 
+
   layout(title = "",
          xaxis = list(title = "Date"), 
          yaxis = list(title = "New Cases"), 
