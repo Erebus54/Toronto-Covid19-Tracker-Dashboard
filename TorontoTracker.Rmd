@@ -410,31 +410,20 @@ outcomes_changes <- outcomes %>%
                 new_resolvedPct = round((Resolved / lag(Resolved) - 1)* 100,2))
 
 
-
-
-fig <- plot_ly(data = outcomes_changes, x = ~Case_Reported_Date, y = ~new_deaths, 
+plot_ly(data = outcomes_changes, x = ~Case_Reported_Date, y = ~new_resolved, 
                type = 'scatter',
-               mode = "lines+markers", 
-               name = "New Deaths", 
-               marker = list(color = "#FF5959"), 
-               line = list(color = "#FF5959")) %>% 
+               mode = "lines", 
+               name = "New Recoveries", 
+               line = list(color = "#25D366", width = 2)) %>% 
   
-  add_trace(y = ~new_resolved, 
-            name = "New Resolved", 
-            marker = list(color = "#6EC5E9"), 
-            line = list(color = "#6EC5E9"))
-
-
-fig <- fig %>% layout(title = "", 
-                      xaxis = list(title = ''),
-                      yaxis = list(title = 'Absolute Change in Cases'), 
-                      hovermode = "x unified",
-                      barmode = 'stack') %>% 
-  
-  layout(xaxis = list(rangeselector = list(
-    buttons = buttons_time)))
-
-fig
+  add_trace(y = ~new_deaths, 
+            name = "New Deaths", 
+            line = list(color = "#FF5959", width = 2)) %>% 
+  layout(title = "", 
+         xaxis = list(title = '', rangeselector = list(buttons = buttons_time)),
+         yaxis = list(title = 'Absolute Change in Cases'), 
+         hovermode = "x unified",
+         barmode = 'stack') 
 ```
 
 ### <b> Cumulative </b> 
@@ -533,7 +522,8 @@ acq_daily <- TargetPHU %>%
   dplyr::filter(Case_AcquisitionInfo != "No Info-Unk") %>% 
   dplyr::select(Row_ID,Case_Reported_Date, Case_AcquisitionInfo) %>% 
   group_by(Case_Reported_Date, Case_AcquisitionInfo) %>% 
-  summarise(count = n()) %>% 
+  dplyr::summarise(count = n(), .groups = 'keep') %>% 
+  dplyr::ungroup() %>% 
   spread(Case_AcquisitionInfo, count, fill = 0) %>% 
   as.data.frame()
 
@@ -664,7 +654,7 @@ plot_ly(acq_daily, x = ~Case_Reported_Date, y = ~OB_csum, type = 'scatter', mode
 acq_daily <- TargetPHU %>% 
   dplyr::select(Row_ID,Case_Reported_Date, Case_AcquisitionInfo) %>% 
   group_by(Case_Reported_Date, Case_AcquisitionInfo) %>% 
-  summarise(count = n()) %>% 
+  summarise(count = n(), .groups = 'keep') %>% 
   dplyr::ungroup() %>% 
   as.data.frame()
 
@@ -705,14 +695,15 @@ Demographics
 ```{r}
 ages <- TargetPHU %>% 
   dplyr::group_by(Age_Group) %>% 
-  dplyr::summarise(n = n()) %>% 
+  dplyr::summarise(n = n(), .groups = 'keep') %>% 
   data.frame()
 
 #breakdown by gender 
 genders <- TargetPHU %>% 
   dplyr::filter(Client_Gender %in% c("MALE", "FEMALE")) %>% 
   dplyr::group_by(Client_Gender) %>% 
-  dplyr::summarise(n = n()) %>% 
+  dplyr::summarise(n = n(), .groups = 'keep') %>%
+  dplyr::ungroup() %>% 
   data.frame() 
 ```
 
@@ -749,6 +740,7 @@ fig
 daily_ages <- TargetPHU %>% 
   dplyr::group_by(Case_Reported_Date, Age_Group) %>% 
   dplyr::count(name = "n") %>% 
+  dplyr::ungroup() %>% 
   data.frame()
 
 daily_ages$Age_Group <- ordered(daily_ages$Age_Group, levels = c("<20", "20s", "30s", "40s", "50s", "60s", "70s", "80s", "90s"))
@@ -778,7 +770,8 @@ plot_ly(daily_ages,
 ```{r}
 daily_ages <- daily_ages %>% 
   dplyr::group_by(Age_Group) %>% 
-  dplyr::mutate(csum = cumsum(n))
+  dplyr::mutate(csum = cumsum(n)) %>% 
+  dplyr::ungroup()
 
 plot_ly(daily_ages, x = ~Case_Reported_Date, y = ~csum, 
         type = 'scatter', mode = 'lines', fill = 'tozeroy', 
@@ -823,7 +816,8 @@ fig
 daily_genders <- TargetPHU %>% 
   dplyr::filter(Client_Gender %in% c("MALE", "FEMALE")) %>% 
   dplyr::group_by(Case_Reported_Date, Client_Gender) %>% 
-  dplyr::count(name = "n") %>% 
+  dplyr::count(name = "n") %>%
+  dplyr::ungroup() %>% 
   dplyr::arrange(Case_Reported_Date, Client_Gender) %>% 
   dplyr::mutate(Client_Gender = trimws(Client_Gender)) %>% 
   data.frame()
@@ -852,6 +846,7 @@ plot_ly(daily_genders,
 daily_genders <- daily_genders %>% 
   dplyr::group_by(Client_Gender) %>% 
   dplyr::mutate(csum = cumsum(n)) %>% 
+  dplyr::ungroup() %>% 
   dplyr::filter(Client_Gender %in% c("MALE", "FEMALE")) %>% 
   data.frame()
 
