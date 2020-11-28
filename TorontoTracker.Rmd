@@ -414,11 +414,11 @@ plot_ly(data = outcomes_changes, x = ~Case_Reported_Date, y = ~new_resolved,
                type = 'scatter',
                mode = "lines", 
                name = "New Recoveries", 
-               line = list(color = "#25D366", width = 2)) %>% 
+               line = list(color = "#25D366", width = 1)) %>% 
   
   add_trace(y = ~new_deaths, 
             name = "New Deaths", 
-            line = list(color = "#FF5959", width = 2)) %>% 
+            line = list(color = "#FF5959", width = 1)) %>% 
   layout(title = "", 
          xaxis = list(title = '', rangeselector = list(buttons = buttons_time)),
          yaxis = list(title = 'Absolute Change in Cases'), 
