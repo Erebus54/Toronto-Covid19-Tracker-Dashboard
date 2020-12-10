@@ -121,7 +121,7 @@ todays_cases <- TargetPHU %>%
   dplyr::filter(Case_Reported_Date == max(Case_Reported_Date)) %>% 
   dplyr::count()
 
-valueBox(todays_cases, icon = "ion-stats-bars")
+valueBox(paste("+", todays_cases, sep = ""), icon = "ion-stats-bars")
 ```
 
 ### Rate per 100K Population 
