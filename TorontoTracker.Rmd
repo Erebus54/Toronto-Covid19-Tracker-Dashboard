@@ -6,7 +6,6 @@ output:
     theme: cosmo
 runtime: shiny
 ---
-
 <style>
 .navbar {
   background-color:black;
