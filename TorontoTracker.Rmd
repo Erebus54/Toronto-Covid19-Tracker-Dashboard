@@ -4,7 +4,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     theme: cosmo
-runtime: shiny
+runtime: shiny_prerendered
 ---
 <style>
 .navbar {
@@ -105,7 +105,7 @@ Home
 Row
 -----------------------------------------------------------------------
 ### Total Cumulative Cases 
-```{r}
+```{r, context="render", echo=FALSE}
 #use this to change icons https://ionicons.com/v2/cheatsheet.html
 cCases <- paste(format(round(as.numeric(nrow(TargetPHU)), 0), nsmall=0, big.mark=",")  # 1,000.6
 )
@@ -114,7 +114,7 @@ valueBox(cCases, icon = "ion-android-person-add")
 
 ### New Cases 
 
-```{r}
+```{r, context="render", echo=FALSE}
 todays_cases <- TargetPHU %>% 
   dplyr::filter(Case_Reported_Date == max(Case_Reported_Date)) %>% 
   dplyr::count()
@@ -123,7 +123,7 @@ valueBox(paste("+", todays_cases, sep = ""), icon = "ion-stats-bars")
 ```
 
 ### Rate per 100K Population 
-```{r}
+```{r, context="render", echo=FALSE}
 
 #src: https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/page.cfm?Lang=E&Geo1=HR&Code1=3595&Geo2=PR&Code2=35&SearchText=City%20of%20Toronto%20Health%20Unit&SearchType=Begins&SearchPR=01&B1=All&GeoLevel=PR&GeoCode=3595&TABID=1&type=0
 
@@ -138,7 +138,7 @@ valueBox(format(prevalencerate, big.mark = ","), icon = "ion-stats-bars")
 
 ### Close Contact Related Cases
 
-```{r}
+```{r, context="render", echo=FALSE}
 closecontactValue <- TargetPHU %>% 
   dplyr::filter(Case_AcquisitionInfo == "CC") 
 
@@ -147,7 +147,7 @@ valueBox(format(round(as.numeric(nrow(closecontactValue)), 0), nsmall=0, big.mar
 
 
 ### Outbreak Related Cases
-```{r}
+```{r, context="render", echo=FALSE}
 obValue <- TargetPHU %>% 
   dplyr::filter(Case_AcquisitionInfo == "OB") 
 
@@ -155,7 +155,7 @@ valueBox(format(round(as.numeric(nrow(obValue)), 0), nsmall=0, big.mark=","), ic
 ```
 
 ### Travel Related Cases
-```{r}
+```{r, context="render", echo=FALSE}
 travelCases <- TargetPHU %>% 
   dplyr::filter(Case_AcquisitionInfo == "Travel") 
 
@@ -163,7 +163,7 @@ valueBox(nrow(travelCases), icon = "ion-plane")
 ```
 
 ### Population Infected 
-```{r}
+```{r, context="render", echo=FALSE}
 valueBox(paste(round(as.integer(nrow(TargetPHU))/POP*100,2), "%"), icon = "ion-ios-calculator")
 ```
 
@@ -171,7 +171,7 @@ valueBox(paste(round(as.integer(nrow(TargetPHU))/POP*100,2), "%"), icon = "ion-i
 Row {.tabset .tabset-fade}
 -------------------------------------
 
-```{r}
+```{r, context="render", echo=FALSE}
 #calculating the growth absolute and relative change in cases
 dailyPHU <- data.frame(TargetPHU %>% 
   dplyr::arrange(Accurate_Episode_Date) %>% 
@@ -190,7 +190,7 @@ dailyPHU <- dailyPHU %>%
 
 
 ### <b> Daily Cases </b> 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::select(Accurate_Episode_Date) %>% 
   dplyr::group_by(Accurate_Episode_Date) %>% 
@@ -211,7 +211,7 @@ plot_ly(x = ~Accurate_Episode_Date,
          yaxis = list(title = 'New Cases (n)'),
          xaxis = list(title = ' ', 
                       rangeselector = list(buttons = buttons_time)),
-         hovermode = "x unified", 
+         hovermode = "x-unified", 
          
          hoverlabel=list(bgcolor="#2858a6"), 
          
@@ -221,7 +221,7 @@ plot_ly(x = ~Accurate_Episode_Date,
 
 ### <b> The Curve - Linear Scale </b>
 
-```{r}
+```{r, context="render", echo=FALSE}
 fig <- plot_ly(x = ~dailyPHU$Accurate_Episode_Date, 
                y = ~dailyPHU$csum, 
                type = 'scatter', mode = 'none', 
@@ -244,7 +244,7 @@ fig
 
 ### <b> The Curve - Logarithmic Scale </b>
 
-```{r}
+```{r, context="render", echo=FALSE}
 fig <- fig %>% layout(yaxis = list(type = "log"))
 fig <- fig %>% layout(xaxis = list(title = ""),
                       yaxis = list (title = "Cumulative Case Counts (Log)"))
@@ -254,7 +254,7 @@ fig
 
 ### <b> Rolling Averages </b>
 
-```{r}
+```{r, context="render", echo=FALSE}
 #calculating rolling average 
 dailyPHU %>% 
   dplyr::select(Accurate_Episode_Date, Cases) %>% 
@@ -287,14 +287,14 @@ plot_ly(x = ~Accurate_Episode_Date,
   layout(title = "",
          xaxis = list(title = "", rangeselector = list(buttons = buttons_time)), 
          yaxis = list(title = "New Cases"), 
-         hovermode = "x unified", 
+         hovermode = "x-unified", 
          hoverlabel=list(bgcolor="black", bordercolor = "white"), 
          legend=list(title=list(text='<b> Moving Averages: </b>')))
 ```
 
 ### <b> Rolling Median </b>
 
-```{r}
+```{r, context="render", echo=FALSE}
 dailyPHU %>% 
   dplyr::select(Accurate_Episode_Date, Cases) %>% 
   dplyr::mutate(Rm7 = round(zoo::rollmean(Cases, k = 7, fill = NA),0),
@@ -328,7 +328,7 @@ dailyPHU %>%
          xaxis = list(title = " ", rangeselector = list(
            buttons = buttons_time)), 
          yaxis = list(title = "New Cases"), 
-         hovermode = "x unified", 
+         hovermode = "x-unified", 
          legend=list(title=list(text='<b> Rolling Medians </b>'))) 
 ```
 
@@ -354,26 +354,26 @@ Row
 -----------------------------------------------------------------------
 
 ### Total Deaths 
-```{r}
+```{r, context="render", echo=FALSE}
 valueBox(format(round(as.numeric(sum(outcomes$Fatal)), 0), nsmall=0, big.mark=","), icon = "ion-android-person-add")
 ```
 
 
 ### Total Resolved 
 
-```{r}
+```{r, context="render", echo=FALSE}
 valueBox(format(round(as.numeric(sum(outcomes$Resolved)), 0), nsmall=0, big.mark=","), icon = "ion-android-person-add")
 ```
 
 ### Current Active Cases 
 
-```{r}
+```{r, context="render", echo=FALSE}
 valueBox(format(round(as.numeric(sum(outcomes$Unresolved)), 0), nsmall=0, big.mark=","), icon = "ion-android-person-add")
 ```
 
 
 ### Death Rate per 1< Population 
-```{r}
+```{r, context="render", echo=FALSE}
 prevalence <- sum(outcomes$Fatal/POP)
 prevalencerate <- as.integer(prevalence*1000000)
 
@@ -382,7 +382,7 @@ valueBox(prevalencerate, icon = "ion-stats-bars")
 
 ### Current Recovery Rate 
 
-```{r}
+```{r, context="render", echo=FALSE}
 rr <- paste(round(100-(sum(outcomes$Fatal)/sum(outcomes$Resolved, outcomes$Unresolved, outcomes$Fatal) * 100),2), "%")
 valueBox(rr, icon = "ion-ios-calculator")
 ```
@@ -390,7 +390,7 @@ valueBox(rr, icon = "ion-ios-calculator")
 Row {.tabset .tabset-fade}
 -------------------------------------
 ### <b> Outcome Breakdown </b> 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::group_by(Outcome1) %>% 
   dplyr::summarise(n = n(), .groups = 'keep') %>%
@@ -420,7 +420,7 @@ plot_ly(labels = ~Outcome, values = ~n, type = 'pie',
 
 
 ### <b> Daily Outcomes </b> 
-```{r}
+```{r, context="render", echo=FALSE}
 #Cases by Outcome 
 plot_ly(data = outcomes,
         x = ~Accurate_Episode_Date, y = ~Active, type = 'bar', name = 'Active', 
@@ -435,13 +435,13 @@ plot_ly(data = outcomes,
   layout(title = "", 
          xaxis = list(title = '', rangeselector = list(buttons = buttons_time)),
          yaxis = list(title = 'Daily Outcomes (n)'),
-         hovermode = "x unified",
+         hovermode = "x-unified",
          barmode = 'stack', 
          legend=list(title=list(text='<b> Outcome: </b>')))
 ```
 
 ### <b> Daily Absolute Change </b>
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::select(Row_ID,Accurate_Episode_Date, Outcome1) %>% 
   dplyr::group_by(Accurate_Episode_Date, Outcome1) %>% 
@@ -475,7 +475,7 @@ plot_ly(x = ~Accurate_Episode_Date,
                       dtick = 25, 
                       tick0 = 0, 
                       tickmode = "linear"), 
-         hovermode = "x unified",
+         hovermode = "x-unified",
          barmode = 'stack', 
          legend=list(title=list(text='<b> Daily Outcomes: </b>'))) 
 
@@ -484,7 +484,7 @@ plot_ly(x = ~Accurate_Episode_Date,
 
 ### <b> Daily Outcomes Composition </b> 
 
-```{r}
+```{r, context="render", echo=FALSE}
 #daily outcome composition 
 outcomes %>% 
   dplyr::mutate(Total=Reduce("+",.[2:4])) %>% 
@@ -530,7 +530,7 @@ outcomes %>%
 
 ### <b> Cumulative Outcomes </b> 
 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::select(Row_ID,Accurate_Episode_Date, Outcome1) %>% 
   dplyr::filter(!Accurate_Episode_Date == "2019-12-25") %>% 
@@ -568,7 +568,7 @@ TargetPHU %>%
                         buttons = buttons_time)),
          
          yaxis = list(title = 'Cumulative (Log)', type = "log"), 
-         hovermode = "x unified",
+         hovermode = "x-unified",
          barmode = 'stack', 
          legend=list(title=list(text='<b> Cumulative Outcomes </b>'))) 
 ```
@@ -604,25 +604,25 @@ Row
 -----------------------------------------------------------------------
 
 ### Travel Related Cases 
-```{r}
+```{r, context="render", echo=FALSE}
 TRC <- round(sum(TargetPHU$Case_AcquisitionInfo == "Travel")/nrow(TargetPHU)*100, 1)
 valueBox(paste(TRC, "%"), icon = "ion-plane")
 ```
 
 ### Close Contact Cases 
-```{r}
+```{r, context="render", echo=FALSE}
 CCC <- round(sum(TargetPHU$Case_AcquisitionInfo == "CC")/nrow(TargetPHU)*100, 1)
 valueBox(paste(CCC, "%"), icon = "ion-ios-people")
 ```
 
 ### Outbreak Related Cases 
-```{r}
+```{r, context="render", echo=FALSE}
 ORC <- round(sum(TargetPHU$Case_AcquisitionInfo == "OB")/nrow(TargetPHU)*100, 1)
 valueBox(paste(ORC, "%"), icon = "ion-alert-circled")
 ```
 
 ### Unknown Cases
-```{r}
+```{r, context="render", echo=FALSE}
 valueBox(paste(100-sum(TRC, ORC, CCC), "%"), icon = "ion-help")
 ```
 
@@ -630,7 +630,7 @@ Row {.tabset .tabset-fade}
 -------------------------------------
 
 ### <b> Breakdown </b> 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   
     dplyr::mutate(Case_AcquisitionInfo = case_when(
@@ -672,7 +672,7 @@ plot_ly(labels = ~Case_AcquisitionInfo,
 
 ### <b> Daily Acquisitions </b> 
 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::select(Accurate_Episode_Date, Case_AcquisitionInfo) %>% 
   
@@ -713,26 +713,27 @@ plot_ly(x = ~Accurate_Episode_Date,
          legend=list(title=list(text='<b> Case Acquisition Type: </b>'))) 
 ```
 
-### <b> Acquisition Composition </b> 
+### <b> Acquisition Proportions </b> 
 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
-  dplyr::select(Row_ID, Accurate_Episode_Date, Case_AcquisitionInfo) %>%
+  dplyr::select(Accurate_Episode_Date, Case_AcquisitionInfo) %>%
   
-    dplyr::mutate(Case_AcquisitionInfo = toupper(Case_AcquisitionInfo)) %>% 
-
-    dplyr::mutate(Case_AcquisitionInfo = case_when(
-      .$Case_AcquisitionInfo == "OB" ~ "Outbreak Related", 
-      .$Case_AcquisitionInfo == "CC" ~ "Close Contact",
-      .$Case_AcquisitionInfo == "TRAVEL" ~ "Travel",
-      .$Case_AcquisitionInfo == "NO KNOWN EPI LINK" ~ "Unknown",
-      .$Case_AcquisitionInfo == "MISSING INFORMATION" ~ "Unknown",
-      .$Case_AcquisitionInfo == "UNSPECIFIED EPI LINK" ~ "Unknown")) %>%
+  dplyr::mutate(Case_AcquisitionInfo = case_when(
+    .$Case_AcquisitionInfo == "OB" ~ "Outbreak Related", 
+    .$Case_AcquisitionInfo == "CC" ~ "Close Contact",
+    .$Case_AcquisitionInfo == "TRAVEL" ~ "Travel",
+    .$Case_AcquisitionInfo == "NO KNOWN EPI LINK" ~ "Unknown",
+    .$Case_AcquisitionInfo == "MISSING INFORMATION" ~ "Unknown",
+    .$Case_AcquisitionInfo == "UNSPECIFIED EPI LINK" ~ "Unknown")) %>%
   
-  group_by(Accurate_Episode_Date, Case_AcquisitionInfo) %>% 
-  summarise(count = n(), .groups = 'keep') %>%
+  dplyr::mutate(Month_Yr = format(as.Date(Accurate_Episode_Date), "%Y-%m")) %>% 
+  dplyr::group_by(Month_Yr, Case_AcquisitionInfo) %>% 
+  dplyr::summarise(count = n(), .groups = 'keep') %>%
   dplyr::ungroup() %>% 
-  spread(Case_AcquisitionInfo, count, fill = 0) %>% 
+  tidyr::pivot_wider(names_from = Case_AcquisitionInfo, 
+                     values_from = count,
+                     values_fill = 0) %>%   
   as.data.frame()  %>% 
   #computes Rowise sums for column via index 
   dplyr::mutate(Total=Reduce("+",.[2:5])) %>% 
@@ -741,53 +742,56 @@ TargetPHU %>%
                 ob_Pct = round((`Outbreak Related` / Total)*100,1),
                 TR_Pct = round((Travel / Total)*100,1),
                 unkn_pct = round((Unknown / Total)*100,1)) %>% 
+  
   #dplyr::select(Accurate_Episode_Date, cc_Pct, ob_Pct, TR_Pct, unkn_pct) %>% 
-plot_ly(x = ~Accurate_Episode_Date, 
+  plot_ly(x = ~Month_Yr, 
           y = ~cc_Pct, 
           name = "Close Contact",
           type = 'bar', 
-          text = ~paste(Accurate_Episode_Date, "<br>",cc_Pct, " % Close Contact (n = ", `Close Contact`, ")",sep = ""), 
+          text = ~paste(Month_Yr, "<br>",cc_Pct, " % Close Contact (n = ", `Close Contact`, ")",sep = ""), 
           hoverinfo = "text", 
           marker = list(color = '#FF5959')) %>% 
   
   add_trace(y = ~unkn_pct, 
             type = 'bar', 
             name = "Unknown", 
-            text = ~paste(Accurate_Episode_Date, "<br>",unkn_pct, " % Unknown (n = ", Unknown , ")", sep = ""), 
+            text = ~paste(Month_Yr, "<br>",unkn_pct, " % Unknown (n = ", Unknown , ")", sep = ""), 
             hoverinfo = "text", 
             marker = list(color = '#DCDCDC')) %>% 
   
   add_trace(y = ~ob_Pct, 
             type = 'bar', 
             name = "Outbreak", 
-            text = ~paste(Accurate_Episode_Date, "<br>",ob_Pct, " % Outbreak (n = ", `Outbreak Related`, ")", sep = ""), 
+            text = ~paste(Month_Yr, "<br>",ob_Pct, " % Outbreak (n = ", `Outbreak Related`, ")", sep = ""), 
             hoverinfo = "text", 
             marker = list(color = '#F4B400')) %>% 
   
   add_trace(y = ~TR_Pct, 
             type = 'bar', 
             name = "Travel", 
-            text = ~paste(Accurate_Episode_Date, "<br>",TR_Pct, " % Travel (n = ", Travel, ")", sep = ""), 
+            text = ~paste(Month_Yr, "<br>",TR_Pct, " % Travel (n = ", Travel, ")", sep = ""), 
             hoverinfo = "text", 
             marker = list(color = '#25D366')) %>% 
   
-  
   layout(title = "",
-         xaxis = list(title = "",  
+         xaxis = list(type = 'date', 
+                      tickformat = "%B <br>%Y",
+                      title = "",  
                       rangeselector = list(buttons = buttons_time)), 
-         yaxis = list(title = "Acquistion Frequency (%)",
+         yaxis = list(title = "Acquistion Proportion (%)",
                       dtick = 25, 
                       tick0 = 0.00, 
                       tickmode = "linear"), 
          barmode = 'stack',
          hovermode = "y-unified", 
          hoverlabel=list(bgcolor="black"),
-         legend = list(title = list(text = '<b> Case Acquisition Type: </b>')))   
+         legend = list(title = list(text = '<b> Case Acquisition Type: </b>')))  
+  
 ```
 
 
 ### <b> Overall Acquisitions (Linear) </b> 
-```{r cumacq}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::select(Row_ID,Case_Reported_Date, Case_AcquisitionInfo) %>%
   
@@ -848,7 +852,7 @@ plot_ly(x = ~Case_Reported_Date,
 ```
 
 ### <b> Overall Acquisitions (Log) </b>
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::select(Row_ID,Case_Reported_Date, Case_AcquisitionInfo) %>% 
   
@@ -910,7 +914,7 @@ plot_ly(x = ~Case_Reported_Date,
 
 ### <b> Heatmap </b> 
 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::select(Accurate_Episode_Date,  Case_AcquisitionInfo) %>% 
   
@@ -968,7 +972,7 @@ Row {.tabset .tabset-fade}
 -------------------------------------
 
 ### <b> Age Breakdown </b> 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::group_by(Age_Group) %>% 
   dplyr::summarise(n = n(), .groups = 'keep') %>% 
@@ -995,7 +999,7 @@ plot_ly(labels = ~Age_Group,
 ```
 
 ### <b> Age Treemap </b> 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::group_by(Age_Group) %>% 
   dplyr::summarise(n = n(), .groups = 'keep') %>% 
@@ -1021,7 +1025,7 @@ TargetPHU %>%
 
 ### <b> Daily Cases by Age </b>
 
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::filter(!is.na(Accurate_Episode_Date)) %>% 
   dplyr::filter(!Accurate_Episode_Date == "2019-12-25") %>% 
@@ -1049,13 +1053,15 @@ plot_ly(x = ~Accurate_Episode_Date,
          legend=list(title=list(text='<b> Age Group </b>'))) 
 ```
 
-<b> Age Composition </b> 
-```{r}
+### <b> Age Proportions </b> 
+
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::filter(!is.na(Accurate_Episode_Date)) %>% 
   dplyr::filter(!Accurate_Episode_Date == "2019-12-25") %>%
   dplyr::filter(!Age_Group == "") %>% 
-  dplyr::group_by(Accurate_Episode_Date, Age_Group) %>% 
+  dplyr::mutate(Month_Yr = format(as.Date(Accurate_Episode_Date), "%Y-%m")) %>% 
+  dplyr::group_by(Month_Yr, Age_Group) %>% 
   dplyr::count(name = "n") %>% 
   dplyr::ungroup() %>% 
   data.frame() %>% 
@@ -1072,14 +1078,14 @@ TargetPHU %>%
          eighty_Pct = round((`80s`/Total)*100,1),
          ninety_Pct = round((`90s`/Total)*100,1)) %>% 
   
-#RColorBrewer::brewer.pal(n = 9, name = "Paired")
-plot_ly(x = ~Accurate_Episode_Date, 
-        y = ~ninety_Pct, 
-        name = "90s",
-        type = 'bar', 
-        text = ~paste("90s", "<br>", ninety_Pct, "%",  " (n = ", `90s`, ")",sep = ""), 
-        hoverinfo = "text", 
-        marker = list(color = '#CAB2D6')) %>% 
+  #RColorBrewer::brewer.pal(n = 9, name = "Paired")
+  plot_ly(x = ~Month_Yr, 
+          y = ~ninety_Pct, 
+          name = "90s",
+          type = 'bar', 
+          text = ~paste("90s", "<br>", ninety_Pct, "%",  " (n = ", `90s`, ")",sep = ""), 
+          hoverinfo = "text", 
+          marker = list(color = '#CAB2D6')) %>% 
   
   add_trace(y = ~eighty_Pct, 
             name = "80s",
@@ -1152,8 +1158,7 @@ plot_ly(x = ~Accurate_Episode_Date,
 
 
 ### <b> Overall by Age Group (Linear) </b>
-```{r csumbyAge}
-
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::filter(!is.na(Accurate_Episode_Date)) %>% 
   dplyr::filter(!Accurate_Episode_Date == "2019-12-25") %>% 
@@ -1186,7 +1191,7 @@ plot_ly(x = ~Accurate_Episode_Date, y = ~csum,
 
 ### <b> Overall by Age Group (Log) </b>
 
-```{r csumbyAgeLog}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::filter(!is.na(Accurate_Episode_Date)) %>% 
   dplyr::filter(!Accurate_Episode_Date == "2019-12-25") %>% 
@@ -1218,7 +1223,7 @@ plot_ly(x = ~Accurate_Episode_Date, y = ~csum,
 ```
 
 ### <b> Gender Breakdown </b>
-```{r}
+```{r, context="render", echo=FALSE}
 #breakdown by gender 
 TargetPHU %>%
   dplyr::filter(Client_Gender == "FEMALE" | Client_Gender == "MALE") %>% 
@@ -1245,7 +1250,7 @@ plot_ly(labels = ~Client_Gender, values = ~n, type = 'pie',
 ```
 
 ### <b> Daily Cases by Gender </b>
-```{r}
+```{r, context="render", echo=FALSE}
 TargetPHU %>% 
   dplyr::filter(!is.na(Accurate_Episode_Date)) %>% 
   dplyr::filter(Client_Gender == "FEMALE" | Client_Gender == "MALE") %>% 
@@ -1272,7 +1277,7 @@ plot_ly(x = ~Accurate_Episode_Date,
 ```
 
 ### <b> Overall by Gender (Linear) </b> 
-```{r}
+```{r, context="render", echo=FALSE}
 daily_genders_cum <- TargetPHU %>% 
   dplyr::filter(!is.na(Accurate_Episode_Date)) %>% 
   dplyr::filter(Client_Gender == "FEMALE" | Client_Gender == "MALE") %>% 
@@ -1312,7 +1317,7 @@ plot_ly(females, x = ~Accurate_Episode_Date,  y = ~Total,  type = 'scatter', mod
 
 ### <b> Overall by Gender (Log) </b> 
 
-```{r}
+```{r, context="render", echo=FALSE}
 plot_ly(females, x = ~Accurate_Episode_Date,  y = ~Total,  type = 'scatter', mode = 'none', name = 'FEMALE', fill = 'tozeroy', 
         fillcolor = 'rgba(195, 126, 240, 0.7)') %>% 
   
