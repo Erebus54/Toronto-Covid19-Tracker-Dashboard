@@ -157,7 +157,7 @@ valueBox(format(round(as.numeric(nrow(obValue)), 0), nsmall=0, big.mark=","), ic
 ### Travel Related Cases
 ```{r, context="render", echo=FALSE}
 travelCases <- TargetPHU %>% 
-  dplyr::filter(Case_AcquisitionInfo == "Travel") 
+  dplyr::filter(Case_AcquisitionInfo == "TRAVEL") 
 
 valueBox(nrow(travelCases), icon = "ion-plane")
 ```
@@ -368,14 +368,14 @@ valueBox(format(round(as.numeric(sum(outcomes$Resolved)), 0), nsmall=0, big.mark
 ### Current Active Cases 
 
 ```{r, context="render", echo=FALSE}
-valueBox(format(round(as.numeric(sum(outcomes$Unresolved)), 0), nsmall=0, big.mark=","), icon = "ion-android-person-add")
+valueBox(format(round(as.numeric(sum(outcomes$Active)), 0), nsmall=0, big.mark=","), icon = "ion-android-person-add")
 ```
 
 
-### Death Rate per 1< Population 
+### Death Rate per 1M
 ```{r, context="render", echo=FALSE}
 prevalence <- sum(outcomes$Fatal/POP)
-prevalencerate <- as.integer(prevalence*1000000)
+prevalencerate <- as.integer(prevalence*1e6)
 
 valueBox(prevalencerate, icon = "ion-stats-bars")
 ```
@@ -605,7 +605,7 @@ Row
 
 ### Travel Related Cases 
 ```{r, context="render", echo=FALSE}
-TRC <- round(sum(TargetPHU$Case_AcquisitionInfo == "Travel")/nrow(TargetPHU)*100, 1)
+TRC <- round(sum(TargetPHU$Case_AcquisitionInfo == "TRAVEL")/nrow(TargetPHU)*100, 1)
 valueBox(paste(TRC, "%"), icon = "ion-plane")
 ```
 
